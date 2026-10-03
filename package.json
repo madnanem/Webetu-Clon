@@ -1,0 +1,37 @@
+{
+  "name": "progres-web",
+  "version": "1.0.0",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "wait-on": "^9.1.0"
+  },
+  "build": {
+    "appId": "com.progres.web",
+    "productName": "Progres Desktop",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "webetu/client/build/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "webetu/server",
+        "to": "server"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
