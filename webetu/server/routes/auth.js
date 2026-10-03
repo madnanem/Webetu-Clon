@@ -77,19 +77,32 @@ router.post('/login', async (req, res) => {
 // Test endpoint to check API connectivity
 router.get('/test', async (req, res) => {
   try {
-    console.log('[AUTH] Testing API connectivity...');
-    const response = await axios.get(BASE_URL, { timeout: 10000 });
-    res.json({ 
-      status: 'ok', 
+    console.log('[AUTH] Testing Progres API connectivity...');
+
+    const response = await apiClient.get(`${BASE_URL}/authentication/v1/`, {
+      timeout: 10000
+    });
+
+    res.json({
+      status: 'ok',
       apiUrl: BASE_URL,
       statusCode: response.status
     });
+
   } catch (err) {
+    console.error('[AUTH TEST]', {
+      code: err.code,
+      message: err.message,
+      status: err.response?.status,
+      statusText: err.response?.statusText
+    });
+
     res.status(503).json({
       status: 'failed',
       apiUrl: BASE_URL,
       error: err.code || err.message,
-      details: err.response?.status || 'No response'
+      statusCode: err.response?.status || null,
+      message: err.message
     });
   }
 });
