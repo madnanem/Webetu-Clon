@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './BacNotes.css';
@@ -17,8 +17,8 @@ export default function BacNotes() {
   useEffect(() => {
     if (!auth?.uuid) return;
     Promise.all([
-      axios.get(`/api/student/notes/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
-      axios.get(`/api/student/bac/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
+      api.get(`/api/student/notes/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
+      api.get(`/api/student/bac/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
     ]).then(([notesRes, bacRes]) => {
       if (notesRes?.data) setNotes(Array.isArray(notesRes.data) ? notesRes.data : [notesRes.data]);
       if (bacRes?.data && typeof bacRes.data === 'object' && !bacRes.data.error) setBacInfo(bacRes.data);
@@ -43,23 +43,23 @@ export default function BacNotes() {
       {/* BAC Dossier Info */}
       {bacInfo && (
         <div className="bac-info-card card">
-          <h3 className="section-heading">{ar ? 'معلومات البكالوريا' : 'Informations BAC'}</h3>
+          <h3 className="section-heading">{ar ? 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø¨ÙƒØ§Ù„ÙˆØ±ÙŠØ§' : 'Informations BAC'}</h3>
           <div className="bac-info-body">
             {bacInfo.moyenneBac && (
               <div className="bac-stat">
-                <span className="bac-stat-label">{ar ? 'معدل البكالوريا' : 'Moyenne BAC'}</span>
+                <span className="bac-stat-label">{ar ? 'Ù…Ø¹Ø¯Ù„ Ø§Ù„Ø¨ÙƒØ§Ù„ÙˆØ±ÙŠØ§' : 'Moyenne BAC'}</span>
                 <span className={`bac-stat-value ${Number(bacInfo.moyenneBac) >= 10 ? 'grade-pass' : 'grade-fail'}`}>{Number(bacInfo.moyenneBac).toFixed(2)}</span>
               </div>
             )}
             {bacInfo.anneeBac && (
               <div className="bac-stat">
-                <span className="bac-stat-label">{ar ? 'سنة البكالوريا' : 'Année BAC'}</span>
+                <span className="bac-stat-label">{ar ? 'Ø³Ù†Ø© Ø§Ù„Ø¨ÙƒØ§Ù„ÙˆØ±ÙŠØ§' : 'AnnÃ©e BAC'}</span>
                 <span className="bac-stat-value">{bacInfo.anneeBac}</span>
               </div>
             )}
             {(bacInfo.libelleSerieBac || bacInfo.Matricule) && (
               <div className="bac-stat">
-                <span className="bac-stat-label">{ar ? 'السلسلة' : 'Série'}</span>
+                <span className="bac-stat-label">{ar ? 'Ø§Ù„Ø³Ù„Ø³Ù„Ø©' : 'SÃ©rie'}</span>
                 <span className="bac-stat-value">{bacInfo.libelleSerieBac || bacInfo.refCodeSerieBac}</span>
               </div>
             )}
@@ -70,7 +70,7 @@ export default function BacNotes() {
       {/* Notes table */}
       {notes.length > 0 ? (
         <div className="card">
-          <h3 className="section-heading">{ar ? 'نقاط المواد' : 'Notes par matière'}</h3>
+          <h3 className="section-heading">{ar ? 'Ù†Ù‚Ø§Ø· Ø§Ù„Ù…ÙˆØ§Ø¯' : 'Notes par matiÃ¨re'}</h3>
           <div className="table-container">
             <table>
               <thead>
@@ -111,3 +111,4 @@ export default function BacNotes() {
 function GradCapIcon() {
   return <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>;
 }
+

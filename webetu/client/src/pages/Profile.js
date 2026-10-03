@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './Profile.css';
@@ -50,10 +50,10 @@ export default function Profile() {
   useEffect(() => {
     if (!auth?.uuid) return;
     Promise.all([
-      axios.get(`/api/student/individu/${auth.uuid}`, { headers: apiHeaders }),
-      axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders }),
-      axios.get(`/api/student/photo/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
-      axios.get(`/api/student/bac/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
+      api.get(`/api/student/individu/${auth.uuid}`, { headers: apiHeaders }),
+      api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders }),
+      api.get(`/api/student/photo/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
+      api.get(`/api/student/bac/${auth.uuid}`, { headers: apiHeaders }).catch(() => null),
     ])
       .then(([indRes, diasRes, photoRes, bacRes]) => {
         setIndividu(indRes.data);
@@ -110,3 +110,4 @@ export default function Profile() {
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './Conge.css';
@@ -15,12 +15,12 @@ export default function Conge() {
 
   useEffect(() => {
     if (!auth?.uuid) return;
-    axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
+    api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
       .then(async r => {
         const dias = (r.data || []);
         const results = await Promise.all(
           dias.map(d =>
-            axios.get(`/api/student/conge/${auth.uuid}/${d.anneeAcademiqueId}`, { headers: apiHeaders })
+            api.get(`/api/student/conge/${auth.uuid}/${d.anneeAcademiqueId}`, { headers: apiHeaders })
               .then(cr => ({ anneeCode: d.anneeAcademiqueCode, anneeId: d.anneeAcademiqueId, data: cr.data }))
               .catch(() => ({ anneeCode: d.anneeAcademiqueCode, anneeId: d.anneeAcademiqueId, data: null }))
           )
@@ -50,7 +50,7 @@ export default function Conge() {
         <div className="conge-body">
           {c.niveauLibelleLongLt && (
             <div className="conge-row">
-              <span className="cl">{ar ? 'المستوى' : 'Niveau'}</span>
+              <span className="cl">{ar ? 'Ø§Ù„Ù…Ø³ØªÙˆÙ‰' : 'Niveau'}</span>
               <span className="cv">{ar ? c.niveauLibelleLongAr : c.niveauLibelleLongLt}</span>
             </div>
           )}
@@ -76,7 +76,7 @@ export default function Conge() {
             <div className="conge-row">
               <span className="cl">{t.conge.resultat}</span>
               <span className={`cv status-badge ${c.demandeValidee ? 'badge-pass' : 'badge-pending'}`}>
-                {c.demandeValidee ? (ar ? 'مُعتمد' : 'Validée') : (ar ? 'في الانتظار' : 'En attente')}
+                {c.demandeValidee ? (ar ? 'Ù…ÙØ¹ØªÙ…Ø¯' : 'ValidÃ©e') : (ar ? 'ÙÙŠ Ø§Ù„Ø§Ù†ØªØ¸Ø§Ø±' : 'En attente')}
               </span>
             </div>
           )}
@@ -117,3 +117,4 @@ export default function Conge() {
 function CongeIcon({ size = 18 }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>;
 }
+

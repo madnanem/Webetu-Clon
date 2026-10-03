@@ -15,12 +15,21 @@ console.log(`[SERVER] Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}`);
 console.log(`[SERVER] PORT: ${PORT}`);
 
 app.use(helmet({ contentSecurityPolicy: false }));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-  ],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './Bilans.css';
@@ -10,7 +10,7 @@ function gradeClass(m) {
 }
 
 function GradePill({ value }) {
-  if (value === null || value === undefined) return <span className="grade-na">—</span>;
+  if (value === null || value === undefined) return <span className="grade-na">â€”</span>;
   return <span className={`grade-pill ${gradeClass(value)}`}>{Number(value).toFixed(2)}</span>;
 }
 
@@ -29,7 +29,7 @@ export default function Bilans() {
 
   useEffect(() => {
     if (!auth?.uuid) return;
-    axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
+    api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
       .then(r => {
         const sorted = [...(r.data || [])].sort((a, b) => b.anneeAcademiqueId - a.anneeAcademiqueId);
         setDias(sorted);
@@ -46,8 +46,8 @@ export default function Bilans() {
     setBilans([]);
     setAnnuelBilan(null);
     Promise.all([
-      axios.get(`/api/student/bilans/${auth.uuid}/${selectedDia}`, { headers: apiHeaders }),
-      axios.get(`/api/student/annuelbilan/${auth.uuid}/${selectedDia}`, { headers: apiHeaders }).catch(() => null),
+      api.get(`/api/student/bilans/${auth.uuid}/${selectedDia}`, { headers: apiHeaders }),
+      api.get(`/api/student/annuelbilan/${auth.uuid}/${selectedDia}`, { headers: apiHeaders }).catch(() => null),
     ])
       .then(([bilansRes, annuelRes]) => {
         setBilans(bilansRes.data || []);
@@ -90,7 +90,7 @@ export default function Bilans() {
 
       {!loading && bilans.length > 0 && (() => {
         // Source 1: dedicated /annuel/bilan endpoint (AcademicDecisionDto: moyenne, creditAcquis, typeDecision*)
-        // Source 2: fallback — bilan in the list with annuel===true (has moyenneGenerale, typeDecision*, creditAcquis per PDF p.24)
+        // Source 2: fallback â€” bilan in the list with annuel===true (has moyenneGenerale, typeDecision*, creditAcquis per PDF p.24)
         const annuelFromList = bilans.find(b => b.annuel === true)
           ?? bilans.find(b => b.bilanFinal === true);
 
@@ -126,7 +126,7 @@ export default function Bilans() {
               {decisionLabel && (
                 <p className={`decision-card-label ${isPass ? 'dc-pass' : 'dc-fail'}`}>
                   {ar
-                      ? `القرار : ${decisionLabel}`
+                      ? `Ø§Ù„Ù‚Ø±Ø§Ø± : ${decisionLabel}`
                       : `Decision: ${decisionLabel}`}
                   
                 </p>
@@ -135,13 +135,13 @@ export default function Bilans() {
                 {annualAvg != null && (
                   <span className={`dc-pill dc-pill-avg ${isPass ? 'dc-pill-pass' : 'dc-pill-fail'}`}>
                     {ar
-                      ? `المعدل السنوي: ${Number(annualAvg).toFixed(2)}/20`
+                      ? `Ø§Ù„Ù…Ø¹Ø¯Ù„ Ø§Ù„Ø³Ù†ÙˆÙŠ: ${Number(annualAvg).toFixed(2)}/20`
                       : `Annual average: ${Number(annualAvg).toFixed(2)}/20`}
                   </span>
                 )}
                 {annualCredits != null && (
                   <span className="dc-pill dc-pill-credits">
-                    {ar ? `الأرصدة: ${annualCredits}` : `Credits: ${annualCredits}`}
+                    {ar ? `Ø§Ù„Ø£Ø±ØµØ¯Ø©: ${annualCredits}` : `Credits: ${annualCredits}`}
                   </span>
                 )}
               </div>
@@ -162,7 +162,7 @@ export default function Bilans() {
                 <div className="bilan-badges">
                   <div className="bilan-badge">
                     <span className="badge-label">{t.bilans.moyenne}</span>
-                    <span className={`badge-value ${gradeClass(bilan.moyenne)}`}>{bilan.moyenne?.toFixed(2) ?? '—'}</span>
+                    <span className={`badge-value ${gradeClass(bilan.moyenne)}`}>{bilan.moyenne?.toFixed(2) ?? 'â€”'}</span>
                   </div>
                   <div className="bilan-badge">
                     <span className="badge-label">{t.bilans.credits}</span>
@@ -194,7 +194,7 @@ export default function Bilans() {
                         {ar ? ue.ueLibelleAr : ue.ueLibelleFr}
                       </span>
                       <div className="ue-summary">
-                        <span className={`ue-moyenne ${gradeClass(ue.moyenne)}`}>{ue.moyenne?.toFixed(2) ?? '—'}</span>
+                        <span className={`ue-moyenne ${gradeClass(ue.moyenne)}`}>{ue.moyenne?.toFixed(2) ?? 'â€”'}</span>
                         <span className="ue-credits">{ue.creditAcquis}/{ue.credit} cr.</span>
                       </div>
                     </div>
@@ -228,11 +228,11 @@ export default function Bilans() {
                                   <td>{ar ? mc.mcLibelleAr : mc.mcLibelleFr}</td>
                                   <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.coefficient}</td>
                                   {hasSession && <>
-                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.moyenneControleContinuSession1 != null ? Number(mc.moyenneControleContinuSession1).toFixed(2) : '—'}</td>
-                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.noteExamenSession1 != null ? Number(mc.noteExamenSession1).toFixed(2) : '—'}</td>
+                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.moyenneControleContinuSession1 != null ? Number(mc.moyenneControleContinuSession1).toFixed(2) : 'â€”'}</td>
+                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.noteExamenSession1 != null ? Number(mc.noteExamenSession1).toFixed(2) : 'â€”'}</td>
                                     <td style={{ textAlign: 'right' }}><GradePill value={mc.moyenneSession1} /></td>
-                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.moyenneControleContinuSession2 != null ? Number(mc.moyenneControleContinuSession2).toFixed(2) : '—'}</td>
-                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.noteExamenSession2 != null ? Number(mc.noteExamenSession2).toFixed(2) : '—'}</td>
+                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.moyenneControleContinuSession2 != null ? Number(mc.moyenneControleContinuSession2).toFixed(2) : 'â€”'}</td>
+                                    <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>{mc.noteExamenSession2 != null ? Number(mc.noteExamenSession2).toFixed(2) : 'â€”'}</td>
                                     <td style={{ textAlign: 'right' }}><GradePill value={mc.moyenneSession2} /></td>
                                   </>}
                                   <td style={{ textAlign: 'right' }}><GradePill value={mc.moyenneGenerale} /></td>
@@ -252,14 +252,14 @@ export default function Bilans() {
                 <div className="bilan-footer">
                   {bilan.passageL1AvecDette && (
                     <div className="dette-warning">
-                      <span>⚠</span>
+                      <span>âš </span>
                       <span>{t.bilans.dette}</span>
                     </div>
                   )}
                   <div className="bilan-footer-item">
                     <span>{t.bilans.semMoyenne}</span>
                     <span className={`bilan-footer-value ${gradeClass(bilan.moyenneSemestre)}`}>
-                      {bilan.moyenneSemestre?.toFixed(2) ?? '—'}
+                      {bilan.moyenneSemestre?.toFixed(2) ?? 'â€”'}
                     </span>
                   </div>
                   <div className="bilan-footer-item">
@@ -289,3 +289,4 @@ export default function Bilans() {
     </div>
   );
 }
+

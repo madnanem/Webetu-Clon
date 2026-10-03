@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './CCGrades.css';
@@ -23,7 +23,7 @@ export default function CCGrades() {
 
   useEffect(() => {
     if (!auth?.uuid) return;
-    axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
+    api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
       .then(r => {
         const sorted = [...(r.data || [])].sort((a, b) => b.anneeAcademiqueId - a.anneeAcademiqueId);
         setDias(sorted);
@@ -38,7 +38,7 @@ export default function CCGrades() {
     setLoading(true);
     setError('');
     setGrades([]);
-    axios.get(`/api/student/ccgrades/${selectedDia}`, { headers: apiHeaders })
+    api.get(`/api/student/ccgrades/${selectedDia}`, { headers: apiHeaders })
       .then(r => setGrades(r.data || []))
       .catch(e => setError(e.response?.status === 404 ? t.ccgrades.noData : t.ccgrades.errorLoad))
       .finally(() => setLoading(false));
@@ -52,7 +52,7 @@ export default function CCGrades() {
     return acc;
   }, {});
 
-  const formatDate = (d) => d ? new Date(d).toLocaleDateString(ar ? 'ar-DZ' : 'en-GB') : '—';
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString(ar ? 'ar-DZ' : 'en-GB') : 'â€”';
 
   return (
     <div className="ccgrades-page">
@@ -103,16 +103,16 @@ export default function CCGrades() {
                       {g.absent
                         ? <span className="absent-tag">{t.ccgrades.absent}</span>
                         : <span className={`grade-pill ${gradeClass(g.note)}`}>
-                            {g.note != null ? Number(g.note).toFixed(2) : '—'}
+                            {g.note != null ? Number(g.note).toFixed(2) : 'â€”'}
                           </span>}
                     </td>
                     <td>
-                      <div className="cc-obs">{g.observation || '—'}</div>
+                      <div className="cc-obs">{g.observation || 'â€”'}</div>
                       {g.autorisationDemandeRecours && (
                         <div className="appeal-info">
-                          <span className="appeal-badge">⚠ Appeal</span>
+                          <span className="appeal-badge">âš  Appeal</span>
                           <span className="appeal-dates">
-                            {formatDate(g.dateDebutDepotRecours)} → {formatDate(g.dateLimiteDepotRecours)}
+                            {formatDate(g.dateDebutDepotRecours)} â†’ {formatDate(g.dateLimiteDepotRecours)}
                           </span>
                         </div>
                       )}
@@ -134,3 +134,4 @@ export default function CCGrades() {
     </div>
   );
 }
+

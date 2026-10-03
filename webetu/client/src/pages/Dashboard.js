@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
@@ -23,8 +23,8 @@ export default function Dashboard() {
       setLoading(true);
       try {
         const [indRes, diasRes] = await Promise.all([
-          axios.get(`/api/student/individu/${auth.uuid}`, { headers: apiHeaders }),
-          axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders }),
+          api.get(`/api/student/individu/${auth.uuid}`, { headers: apiHeaders }),
+          api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders }),
         ]);
         setIndividu(indRes.data);
         const sortedDias = (diasRes.data || []).sort((a, b) => b.anneeAcademiqueId - a.anneeAcademiqueId);
@@ -32,7 +32,7 @@ export default function Dashboard() {
 
         const logoId = auth?.etablissementId;
         if (logoId) {
-          axios.get(`/api/student/logo/${logoId}`, { headers: apiHeaders })
+          api.get(`/api/student/logo/${logoId}`, { headers: apiHeaders })
             .then(r => {
               const d = r.data;
               const img = d?.logo || d?.image || d?.photo;
@@ -43,7 +43,7 @@ export default function Dashboard() {
 
         if (sortedDias.length > 0) {
           try {
-            const bRes = await axios.get(
+            const bRes = await api.get(
               `/api/student/bilans/${auth.uuid}/${sortedDias[0].id}`,
               { headers: apiHeaders }
             );
@@ -137,7 +137,7 @@ export default function Dashboard() {
           <div className="stat-body">
             <p className="stat-label">{t.dashboard.lastAverage}</p>
             <p className={`stat-value ${latestBilan ? gradeColor(latestBilan.moyenne) : ''}`}>
-              {latestBilan ? latestBilan.moyenne?.toFixed(2) : '—'}
+              {latestBilan ? latestBilan.moyenne?.toFixed(2) : 'â€”'}
             </p>
             <p className="stat-sub">{latestBilan?.periodeLibelleFr || t.dashboard.notAvailable}</p>
           </div>
@@ -147,7 +147,7 @@ export default function Dashboard() {
           <div className="stat-icon stat-icon-purple"><TargetIcon /></div>
           <div className="stat-body">
             <p className="stat-label">{t.dashboard.creditsAcquired}</p>
-            <p className="stat-value">{latestBilan?.creditAcquis ?? '—'}</p>
+            <p className="stat-value">{latestBilan?.creditAcquis ?? 'â€”'}</p>
             <p className="stat-sub">
               {latestBilan
                 ? `${t.dashboard.on} ${latestBilan.bilanUes?.reduce((s, u) => s + u.credit, 0) || '?'}`
@@ -162,10 +162,10 @@ export default function Dashboard() {
             <p className="stat-label">{t.dashboard.cycle}</p>
             <p className="stat-value" style={{ fontSize: '1rem', marginTop: '0.25rem' }}>
               {ar
-                ? (latest?.refLibelleCycleAr || '—')
+                ? (latest?.refLibelleCycleAr || 'â€”')
                 : (latest?.refLibelleCycle
                     ? latest.refLibelleCycle.charAt(0).toUpperCase() + latest.refLibelleCycle.slice(1)
-                    : '—')}
+                    : 'â€”')}
             </p>
             <p className="stat-sub">{ar ? (latest?.ofLlSpecialiteArabe || latest?.ofLlFiliereArabe) : (latest?.ofLlSpecialite || latest?.ofLlFiliere) || ''}</p>
           </div>
@@ -235,3 +235,4 @@ function UserIcon()    { return <svg width="20" height="20" viewBox="0 0 24 24" 
 function DocIcon()     { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>; }
 function ChartIcon()   { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>; }
 function GroupIcon()   { return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>; }
+

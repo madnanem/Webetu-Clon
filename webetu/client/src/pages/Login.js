@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -39,7 +39,7 @@ export default function Login() {
           </div>
           <div className="login-logo-subtitle">
             <strong>{t.login.portalTitle || 'Student Portal'}</strong>
-            {t.login.ministry || 'وزارة التعليم العالي والبحث العلمي'}
+            {t.login.ministry || 'ÙˆØ²Ø§Ø±Ø© Ø§Ù„ØªØ¹Ù„ÙŠÙ… Ø§Ù„Ø¹Ø§Ù„ÙŠ ÙˆØ§Ù„Ø¨Ø­Ø« Ø§Ù„Ø¹Ù„Ù…ÙŠ'}
           </div>
         </div>
 
@@ -83,7 +83,7 @@ export default function Login() {
 
         <div className="login-footer">
           <div>{t.login.footer}</div>
-          <div className="login-footer-copy">Copyright © 2026</div>
+          <div className="login-footer-copy">Copyright Â© 2026</div>
         </div>
       </div>
     </div>
@@ -108,3 +108,4 @@ function MoonIcon() {
 function SunIcon() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>;
 }
+

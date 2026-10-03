@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './Inscriptions.css';
@@ -15,7 +15,7 @@ export default function Inscriptions() {
 
   useEffect(() => {
     if (!auth?.uuid) return;
-    axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
+    api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
       .then(r => {
         const sorted = [...(r.data || [])].sort((a, b) => b.anneeAcademiqueId - a.anneeAcademiqueId);
         setDias(sorted);
@@ -84,3 +84,4 @@ function InsRow({ label, value, mono, arabic }) {
 function GradIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>;
 }
+

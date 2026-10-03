@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './Timetable.css';
@@ -16,7 +16,7 @@ function SlotCell({ slot, ar }) {
   return (
     <div className={`tt-cell ${AP_CLASS[ap] || 'ap-default'}`}>
       {ap && <span className={`tt-ap-badge ${AP_CLASS[ap] || 'ap-default'}`}>{ap}</span>}
-      <div className="tt-cell-subject">{subject || '—'}</div>
+      <div className="tt-cell-subject">{subject || 'â€”'}</div>
       {slot.refLieuDesignation && <div className="tt-cell-room">{slot.refLieuDesignation}</div>}
       {teacher && <div className="tt-cell-teacher">{teacher}</div>}
     </div>
@@ -37,7 +37,7 @@ export default function Timetable() {
 
   useEffect(() => {
     if (!auth?.uuid) return;
-    axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
+    api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
       .then(r => {
         const sorted = [...(r.data || [])].sort((a, b) => b.anneeAcademiqueId - a.anneeAcademiqueId);
         setDias(sorted);
@@ -52,7 +52,7 @@ export default function Timetable() {
     setLoading(true);
     setError('');
     setSlots([]);
-    axios.get(`/api/student/timetable/${selectedDia}`, { headers: apiHeaders })
+    api.get(`/api/student/timetable/${selectedDia}`, { headers: apiHeaders })
       .then(r => setSlots(r.data || []))
       .catch(e => setError(e.response?.status === 404 ? t.timetable.noData : t.timetable.errorLoad))
       .finally(() => setLoading(false));
@@ -65,7 +65,7 @@ export default function Timetable() {
     if (!timeSlotMap[key]) {
       timeSlotMap[key] = {
         key,
-        label: s.plageHoraireLibelleFr || `${s.plageHoraireHeureDebut || ''}–${s.plageHoraireFin || ''}`,
+        label: s.plageHoraireLibelleFr || `${s.plageHoraireHeureDebut || ''}â€“${s.plageHoraireFin || ''}`,
         start: s.plageHoraireHeureDebut || key,
       };
     }
@@ -117,7 +117,7 @@ export default function Timetable() {
           <table className="tt-table">
             <thead>
               <tr>
-                <th className="tt-th-day">{ar ? 'اليوم' : 'Day'}</th>
+                <th className="tt-th-day">{ar ? 'Ø§Ù„ÙŠÙˆÙ…' : 'Day'}</th>
                 {timeSlots.map(ts => (
                   <th key={ts.key} className="tt-th-time">{ts.label}</th>
                 ))}
@@ -155,3 +155,4 @@ export default function Timetable() {
     </div>
   );
 }
+

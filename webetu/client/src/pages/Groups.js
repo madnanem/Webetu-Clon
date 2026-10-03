@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT } from '../context/LanguageContext';
 import './Groups.css';
@@ -16,7 +16,7 @@ export default function Groups() {
 
   useEffect(() => {
     if (!auth?.uuid) return;
-    axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
+    api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
       .then(r => {
         const sorted = [...(r.data || [])].sort((a, b) => b.anneeAcademiqueId - a.anneeAcademiqueId);
         setDias(sorted);
@@ -31,7 +31,7 @@ export default function Groups() {
     setLoading(true);
     setError('');
     setGroups([]);
-    axios.get(`/api/student/groups/${selectedDia}`, { headers: apiHeaders })
+    api.get(`/api/student/groups/${selectedDia}`, { headers: apiHeaders })
       .then(r => setGroups([...(r.data || [])].sort((a, b) => a.periodeId - b.periodeId)))
       .catch(e => {
         setError(e.response?.status === 404 ? t.groups.errorYear : t.groups.errorLoad);
@@ -108,3 +108,4 @@ export default function Groups() {
 function GroupsIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
 }
+

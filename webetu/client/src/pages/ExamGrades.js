@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+﻿import React, { useEffect, useState } from 'react';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useT, useLanguage } from '../context/LanguageContext';
 import './ExamGrades.css';
@@ -10,7 +10,7 @@ function gradeClass(m) {
 }
 
 function isResitSession(sessionName) {
-  return /rattrap|2[eè]me|2ième|session\s*2|seconde/i.test(sessionName || '');
+  return /rattrap|2[eÃ¨]me|2iÃ¨me|session\s*2|seconde/i.test(sessionName || '');
 }
 
 function GradeTable({ items, ar, t, formatDate }) {
@@ -32,22 +32,22 @@ function GradeTable({ items, ar, t, formatDate }) {
               <td>
                 {g.ueCode
                   ? <span className="ue-chip">{g.ueCode}</span>
-                  : <span className="text-muted">—</span>}
+                  : <span className="text-muted">â€”</span>}
               </td>
               <td style={{ textAlign: 'right' }}>
                 <span className={`grade-pill ${gradeClass(g.noteExamen)}`}>
-                  {g.noteExamen != null ? Number(g.noteExamen).toFixed(2) : '—'}
+                  {g.noteExamen != null ? Number(g.noteExamen).toFixed(2) : 'â€”'}
                 </span>
               </td>
               <td>
                 {g.autorisationDemandeRecours ? (
                   <div className="appeal-info">
-                    <span className="appeal-badge">⚠</span>
+                    <span className="appeal-badge">âš </span>
                     <span className="appeal-dates">
-                      {formatDate(g.dateDebutDepotRecours)} → {formatDate(g.dateLimiteDepotRecours)}
+                      {formatDate(g.dateDebutDepotRecours)} â†’ {formatDate(g.dateLimiteDepotRecours)}
                     </span>
                   </div>
-                ) : <span className="text-muted">—</span>}
+                ) : <span className="text-muted">â€”</span>}
               </td>
             </tr>
           ))}
@@ -64,26 +64,26 @@ function SemesterCard({ period, semNumber, ar, t, formatDate }) {
   const [active, setActive] = useState(hasRegular ? 'regular' : 'resit');
 
   const items = active === 'regular' ? period.regular : period.resit;
-  const semLabel = ar ? `الفصل ${semNumber}` : `Semester ${semNumber}`;
+  const semLabel = ar ? `Ø§Ù„ÙØµÙ„ ${semNumber}` : `Semester ${semNumber}`;
 
   return (
     <div className="card eg-period-card">
       <div className="eg-period-header">{semLabel}</div>
 
-      {/* Session tabs — only show if both sessions exist */}
+      {/* Session tabs â€” only show if both sessions exist */}
       {hasRegular && hasResit && (
         <div className="eg-tabs">
           <button
             className={`eg-tab ${active === 'regular' ? 'eg-tab-active eg-tab-regular' : ''}`}
             onClick={() => setActive('regular')}
           >
-            {ar ? 'الدورة العادية' : 'Regular Session'}
+            {ar ? 'Ø§Ù„Ø¯ÙˆØ±Ø© Ø§Ù„Ø¹Ø§Ø¯ÙŠØ©' : 'Regular Session'}
           </button>
           <button
             className={`eg-tab ${active === 'resit' ? 'eg-tab-active eg-tab-resit' : ''}`}
             onClick={() => setActive('resit')}
           >
-            {ar ? 'دورة الاستدراك' : 'Resit Session'}
+            {ar ? 'Ø¯ÙˆØ±Ø© Ø§Ù„Ø§Ø³ØªØ¯Ø±Ø§Ùƒ' : 'Resit Session'}
           </button>
         </div>
       )}
@@ -93,8 +93,8 @@ function SemesterCard({ period, semNumber, ar, t, formatDate }) {
         <div className="eg-single-label">
           <span className={`eg-session-type-badge ${hasResit ? 'eg-badge-resit' : 'eg-badge-regular'}`}>
             {hasResit
-              ? (ar ? 'دورة الاستدراك' : 'Resit Session')
-              : (ar ? 'الدورة العادية' : 'Regular Session')}
+              ? (ar ? 'Ø¯ÙˆØ±Ø© Ø§Ù„Ø§Ø³ØªØ¯Ø±Ø§Ùƒ' : 'Resit Session')
+              : (ar ? 'Ø§Ù„Ø¯ÙˆØ±Ø© Ø§Ù„Ø¹Ø§Ø¯ÙŠØ©' : 'Regular Session')}
           </span>
         </div>
       )}
@@ -118,7 +118,7 @@ export default function ExamGrades() {
 
   useEffect(() => {
     if (!auth?.uuid) return;
-    axios.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
+    api.get(`/api/student/dias/${auth.uuid}`, { headers: apiHeaders })
       .then(r => {
         const sorted = [...(r.data || [])].sort((a, b) => b.anneeAcademiqueId - a.anneeAcademiqueId);
         setDias(sorted);
@@ -133,13 +133,13 @@ export default function ExamGrades() {
     setLoading(true);
     setError('');
     setGrades([]);
-    axios.get(`/api/student/examgrades/${selectedDia}`, { headers: apiHeaders })
+    api.get(`/api/student/examgrades/${selectedDia}`, { headers: apiHeaders })
       .then(r => setGrades(r.data || []))
       .catch(e => setError(e.response?.status === 404 ? t.examgrades.noData : t.examgrades.errorLoad))
       .finally(() => setLoading(false));
   }, [selectedDia, apiHeaders]); // eslint-disable-line
 
-  const formatDate = (d) => d ? new Date(d).toLocaleDateString(ar ? 'ar-DZ' : 'en-GB') : '—';
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString(ar ? 'ar-DZ' : 'en-GB') : 'â€”';
 
   // Group grades by period, split into regular / resit
   const periodMap = {};
@@ -156,7 +156,7 @@ export default function ExamGrades() {
     }
   });
 
-  // Ascending by period ID → index 0 = Semester 1, index 1 = Semester 2
+  // Ascending by period ID â†’ index 0 = Semester 1, index 1 = Semester 2
   const periods = Object.values(periodMap).sort((a, b) => Number(a.id) - Number(b.id));
 
   return (
@@ -206,3 +206,4 @@ export default function ExamGrades() {
     </div>
   );
 }
+

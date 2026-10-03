@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import axios from 'axios';
+﻿import React, { createContext, useContext, useState, useCallback } from 'react';
+import api from '../api';
 
 const AuthContext = createContext(null);
 
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError('');
     try {
-      const { data } = await axios.post('/api/auth/login', { username, password });
+      const { data } = await api.post('/api/auth/login', { username, password });
       const session = {
         token: data.token,
         uuid: data.uuid,
@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
       setAuth(session);
       return { success: true };
     } catch (err) {
-      const msg = err.response?.data?.error || 'Connexion échouée. Vérifiez vos identifiants.';
+      const msg = err.response?.data?.error || 'Connexion Ã©chouÃ©e. VÃ©rifiez vos identifiants.';
       setError(msg);
       return { success: false, error: msg };
     } finally {
@@ -53,3 +53,4 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
+
